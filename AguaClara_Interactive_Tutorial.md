@@ -32,6 +32,16 @@ These questions are meant to test what you've learned from the Python Basics tut
 1. Write a conditional statement with 3 conditions: when x is 10, when x is 1, and when x is anything other than 1 or 10. For each condition, have your code print what the value is or isn't.
 
 <!--- Fill you answer here. --->
+```python
+x = 10
+if x == 10:
+  print("The value is " +str(x))
+elif x == 1:
+  print("The value is " +str(x))
+else:
+  print("The value is not 1 or 10.")
+
+```
 
 
 
@@ -39,9 +49,13 @@ These questions are meant to test what you've learned from the Python Basics tut
 2. Write a `for` loop that takes a variable with an initial value of 0, and adds the current index to the previous value of that variable (i.e. you variable should grow in size every iteration). Perform the iteration 20 times, and have the final value be printed at the end.
 
 <!--- Fill you answer here. --->
-
-
-
+```python
+i = 0
+sum = 0
+for i in range(20):
+  sum += i
+print(sum)
+```
 
 
 
@@ -51,15 +65,32 @@ These questions are meant to test what you've learned from the Python Basics tut
 3. Using the NumPy package and `unit_registry`, calculate the value of sin(4) meters, and use the sigfig function from the unit unit_registry module in aide_design to get your answer to 2 sig-figs. *(Hint: You will need to import these packages. Remember how to do that?)*
 
 <!--- Fill you answer here. --->
+```Python
+from aguaclara.play import*
+import math as m
+m.sin(4)
+u.default_format = '.2f'
+print(m.sin(4)*u.m/u.m)
+
+```
 
 
 
 4. Create a `list` of length 5, and verify the length of your list. Once you've done that, turn your `list` into an `array` and apply units of meters to it. After that, create a 5x5 `array`, extract the middle row and middle column. Verify the size of your 2D `array` and apply units of liters to it.
 
 <!--- Fill you answer here. --->
+```python
+list1 = [1,2,3,4,5]
+len(list1)
+myArray = np.array(list1)*u.m
+myArray2 = [[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5]]
+myArray2D = np.array(myArray2)
+np.size(myArray2D)
+myArray2D[:,2]
+myArray2D[2,:]
+myArray2Dunits = myArray2D*u.l
 
-
-
+```
 
 
 
@@ -80,13 +111,41 @@ from scipy.constants import Boltzmann as kB_sc # I've imported the unitless valu
 kB = kB_sc * u.joule / u.kelvin # I've given kB units for you in J/K; you can use the kB variable to give you Boltzmann's constant with units
 
 # Write your code here
-
+def diffcoeff(T,visc,r):
+    kB.to_base_units()
+    T.to(u.kelvin)
+    visc.to(u.kg/(u.m*u.s))
+    r.to(u.m)
+    diff = kB*T/(6*m.pi*visc*r)
+    diff = diff.to_base_units()
+    return diff
+diffcoeff(20*u.kelvin,20*u.kg/(u.m*u.s), 10*u.m)
 ```
 
 6. You have a pipe with a radius of 0.2 m with water flowing in it at 2 m<sup>3</sup>/s. You want to see how the Reynolds Number changes as viscosity changes due to a change in temperature from 0 to 200<sup>o</sup>C. Create a plot of Reynolds Number against Temperature in Kelvin to show a relationship. Make sure your plot has a title, labeled axes, and axes grid. You can use functions from `physchem` like `pc.re_pipe` and `pc.viscosity_kinematic`. *(Hint: Make an array of temperatures to input into the `pc.viscosity_kinematic` function)*. Make sure to save you plot to your images folder in your personal repository, and display it below using `plt.show()` and a relative file path to the image.
 
 <!--- Fill you answer here. --->
+```Python
 
+from aguaclara.play import*
+temparray = u.Quantity(np.linspace(273.15,473.15,50), u.kelvin)
+
+y = pc.re_pipe(2,0.4,pc.viscosity_kinematic(temparray))
+plt.plot(temparray,y,'-',label = "Reynolds Number")  
+plt.xlabel('Temperature(K)')
+plt.ylabel('Reynolds Number')
+plt.title("Reynolds Number vs. Temp (K)")
+plt.minorticks_on()
+plt.grid(which = "major")
+plt.grid(which="minor")
+plt.legend(loc = 'lower right', ncol = 1)
+plt.tight_layout()
+plt.savefig('./Images/ReynoldsNumber_Plot.png')
+plt.show()
+
+
+
+```
 
 # GitHub Basics
 Congratulations! You've completed this interactive tutorial. Now all you need to do is save your work and put it on your personal repository. Toggle the Git Tab using `Cntrl + Shift + 9`.
